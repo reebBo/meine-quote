@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Observable } from 'rxjs';
-import { loadUsers, User } from './state/user/user.actions';
 import { Store } from '@ngrx/store';
-import { selectAllUsers, selectUsersLoading } from './state/user/user.selectors';
 import { CommonModule } from '@angular/common';
+import { selectAllQuotes, selectAllQuotesLoading } from './state/quote/quote.selectors';
+import { Quote, loadQuotes } from './state/quote/quote.actions';
 
 @Component({
   selector: 'app-root',
@@ -16,15 +16,15 @@ import { CommonModule } from '@angular/common';
 export class AppComponent {
   title = 'meine-quote';
 
-   users$: Observable<User[]>;
+   quotes$: Observable<Quote[]>;
   loading$: Observable<boolean>;
 
   constructor(private store: Store) {
-    this.users$ = this.store.select(selectAllUsers);
-    this.loading$ = this.store.select(selectUsersLoading); 
+    this.quotes$ = this.store.select(selectAllQuotes);
+    this.loading$ = this.store.select(selectAllQuotesLoading); 
   }
 
   ngOnInit(): void {
-    this.store.dispatch(loadUsers());
+    this.store.dispatch(loadQuotes());
   }
 }

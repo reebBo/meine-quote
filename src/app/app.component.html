@@ -4,8 +4,8 @@
   <div *ngIf="loading$ | async">Loading users...</div>
 
   <ul *ngIf="!(loading$ | async)">
-    <li *ngFor="let user of users$ | async">
-      {{ user.name }} ({{ user.email }})
+    <li *ngFor="let quote of quotes$ | async">
+      {{ quote.quoteText }} ({{ quote.quoteAuthor }})
     </li>
   </ul>
 </div>

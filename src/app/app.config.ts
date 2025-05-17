@@ -8,15 +8,15 @@ import {
 } from '@angular/platform-browser';
 import { provideStore } from '@ngrx/store';
 import { EffectsModule, provideEffects } from '@ngrx/effects';
-import { userReducer } from './state/user/user.reducer';
-import { UserEffects } from './state/user/user.effects';
+import { quoteReducer } from './state/quote/quote.reducer';
+import { QuotesEffects } from './state/quote/quote.effects';
 import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(),
-    provideStore({ user: userReducer }),
-    provideEffects([UserEffects]),
+    provideStore({ quote: quoteReducer }),
+    provideEffects([QuotesEffects]),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
