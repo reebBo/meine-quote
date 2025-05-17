@@ -9,7 +9,6 @@ import { Quote } from '../state/quote/quote.actions';
   providedIn: 'root',
 })
 export class QuoteService {
-  private apiUrl = 'https://jsonplaceholder.typicode.com/users'; 
   private apiQuotesUrl = '  https://raw.githubusercontent.com/JamesFT/Database-Quotes-JSON/master/quotes.json'; 
 
   constructor(private http: HttpClient) {}

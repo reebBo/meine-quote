@@ -16,7 +16,7 @@ import { Quote, loadQuotes } from './state/quote/quote.actions';
 export class AppComponent {
   title = 'meine-quote';
 
-   quotes$: Observable<Quote[]>;
+  quotes$: Observable<Quote[]>;
   loading$: Observable<boolean>;
 
   constructor(private store: Store) {

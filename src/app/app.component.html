@@ -1,7 +1,7 @@
 <div>
-  <h1>User List</h1>
+  <h1>Quotes List</h1>
 
-  <div *ngIf="loading$ | async">Loading users...</div>
+  <div *ngIf="loading$ | async">Loading quotes...</div>
 
   <ul *ngIf="!(loading$ | async)">
     <li *ngFor="let quote of quotes$ | async">
