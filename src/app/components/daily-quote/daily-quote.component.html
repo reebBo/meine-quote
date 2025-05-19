@@ -1,0 +1,33 @@
+<div
+  class="app-container d-flex justify-content-center align-items-center min-vh-100"
+>
+  <div class="d-flex justify-content-end mb-3">
+    <i class="fa-solid fa-share"></i>
+  </div>
+  <div
+    class="w-100 border p-5 bg-white"
+    style="max-width: 300px; min-height: 500px"
+  >
+    <div *ngIf="loading$ | async" class="text-center">Loading quotes...</div>
+
+    <div *ngIf="quoteOfTheDay$ | async as quote">
+      <h2 class="text-body text-end">
+        {{ quote.quoteText }}
+      </h2>
+      <h6 class="text-muted text-end">
+        {{ quote.quoteAuthor }}
+      </h6>
+    </div>
+  </div>
+</div>
+
+<style>
+  .text-body {
+    line-height: 1.5;
+  }
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+</style>

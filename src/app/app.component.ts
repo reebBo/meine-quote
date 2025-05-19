@@ -5,10 +5,11 @@ import { Store } from '@ngrx/store';
 import { CommonModule } from '@angular/common';
 import { selectAllQuotes, selectAllQuotesLoading } from './state/quote/quote.selectors';
 import { Quote, loadQuotes } from './state/quote/quote.actions';
+import { DailyQuoteComponent } from './components/daily-quote/daily-quote.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule],
+  imports: [RouterOutlet, DailyQuoteComponent, CommonModule],
   standalone: true,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
