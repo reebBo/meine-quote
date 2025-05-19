@@ -1,1 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #f0f0f0;
+
+
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+//   align-items: start;
+
+  min-height: 100vh;
+}
+
+
+
+
+.app-container {
+  background-color: black;
+  max-width: 390px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; // ✅ prevents internal scroll unless you allow it
+  position: relative;
+}
+
+//If needed, use overflow-y: auto in child components where scrolling should happen.
