@@ -5,7 +5,7 @@
     <i class="fa-solid fa-share p-2 rounded-pill"></i>
   </div>
   <div class="block-text w-100 p-5 bg-transparent">
-    <div  class="loading-container">
+    <div *ngIf="loading$ | async" class="loading-container">
       <div class="spinner"></div>
       <p>Loading quotes...</p>
     </div>

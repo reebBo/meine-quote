@@ -5,7 +5,22 @@
 }
 .text-body {
   line-height: 1.5;
-  // TODO: add a check of device and make this responsive
+  font-size: 1rem;
+
+  // Phones
+  @media (max-width: 600px) {
+    font-size: 0.95rem;
+  }
+
+  // Tablets (iPad, etc.)
+  @media (min-width: 601px) and (max-width: 1024px) {
+    font-size: 1.05rem;
+  }
+
+  // Desktops
+  @media (min-width: 1025px) {
+    font-size: 1.15rem;
+  }
 }
 .fa-share {
   color: #a3a2a2;
@@ -30,8 +45,23 @@
   color: #645c0f;
   font-family: "Lato", sans-serif;
   font-style: normal;
-  font-size: 1.2rem;
   font-weight: 500;
+  font-size: 1.2rem;
+
+  // Phones
+  @media (max-width: 600px) {
+    font-size: 1.05rem;
+  }
+
+  // Tablets (iPad, etc.)
+  @media (min-width: 601px) and (max-width: 1024px) {
+    font-size: 1.15rem;
+  }
+
+  // Desktops
+  @media (min-width: 1025px) {
+    font-size: 1.3rem;
+  }
 }
  .loading-container {
   display: flex;
