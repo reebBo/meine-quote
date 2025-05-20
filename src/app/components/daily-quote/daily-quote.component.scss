@@ -1,13 +1,24 @@
 .quote-container {
-    display: flex;
-    flex-direction: column;
-    position: relative;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 .text-body {
   line-height: 1.5;
 }
-.border-sidefie {
-  border-image: linear-gradient(135deg, #e2dfdf, #a3a2a2) 1;
-  border-style: solid;
-  border-width: 1px;
-}
+.fa-share {
+    color: #a3a2a2;
+    box-shadow: 0 0 0 1px #a3a2a2;
+    background-color: #4f4d4d;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  .shiny-text {
+    background: linear-gradient(140deg, #3a8f48, #8b2a57, #877c17, #172a72);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .neutral-text {
+    color: #3a8f48;
+  }

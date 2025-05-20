@@ -2,26 +2,18 @@
   class="quote-container d-flex justify-content-center align-items-center min-vh-100"
 >
   <div class="d-flex justify-content-end mb-3">
-    <i class="fa-solid fa-share"></i>
+    <i class="fa-solid fa-share p-2 rounded-pill"></i>
   </div>
-  <div
-    class="w-100 border-sidefie p-5  bg-transparent"
-    style="max-width: 300px; min-height: 500px"
-  >
+  <div class="w-100 p-5 bg-transparent" style="min-height: 500px">
     <div *ngIf="loading$ | async" class="text-center">Loading quotes...</div>
 
     <div *ngIf="quoteOfTheDay$ | async as quote">
-      <h2 class="text-body text-end">
+      <h2 class="text-body text-end shiny-text">
         {{ quote.quoteText }}
       </h2>
-      <h6 class="text-muted text-end">
+      <h6 class="text-muted text-end neutral-text">
         {{ quote.quoteAuthor }}
       </h6>
     </div>
   </div>
 </div>
-
-<style>
-  
- 
-</style>
