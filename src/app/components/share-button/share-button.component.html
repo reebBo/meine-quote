@@ -14,16 +14,16 @@
       role="menu"
       aria-labelledby="button-autoclose1"
     >
-      <li role="menuitem"><a class="dropdown-item" href="#">x</a></li>
-      <li role="menuitem">
-        <a class="dropdown-item" href="#">x</a>
-      </li>
-      <li role="menuitem">
-        <a class="dropdown-item" href="#">x</a>
-      </li>
-       <li role="menuitem">
-        <a class="dropdown-item" href="#">x</a>
+      <li role="menuitem" *ngFor="let social of socialLinks">
+        <a
+          class="dropdown-item mx-2 justify-content-center"
+          [href]="social.url"
+          [style.color]="social.color"
+        >
+          <i [class]="social.iconClass"></i>
+        </a>
       </li>
     </ul>
   </div>
 </div>
+ 

@@ -1,3 +1,10 @@
+.fa-share {
+  color: #a3a2a2;
+  box-shadow: 0 0 0 1px #a3a2a2;
+  background-color: #4f4d4d;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
 .horizontal-menu {
   display: flex;
   flex-direction: row;
@@ -9,7 +16,7 @@
 }
 
 .dropdown-menu {
-  left: 60% !important;
+  left: 50% !important;
   transform: translateX(-50%) !important;
 
   border: none !important;
@@ -22,13 +29,19 @@
 }
 
 .dropdown-item {
-  padding: 0.3rem 0.8rem;
+  width: 40px;        
+  height: 40px;       
+  padding: 0;         
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 50%;  
+  transition: color 0.3s, outline 0.3s;
 }
-
 .dropdown-item:hover,
 .dropdown-item:focus {
-  background: linear-gradient(to bottom, #f0f0f0, #d5d5d5, #bbbbbb);
-
-  color: inherit; /* Optional: keeps the text color consistent */
+  background: transparent;
+  color: inherit;               /* Keep the icon’s original color */
+  outline: 1px solid currentColor; /* Outline uses the same color as the icon */
   border-radius: 50%;
 }

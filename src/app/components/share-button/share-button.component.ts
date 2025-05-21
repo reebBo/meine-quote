@@ -1,23 +1,49 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { CommonModule } from '@angular/common';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 @Component({
   selector: 'app-share-button',
   standalone: true,
-  imports: [CommonModule, ModalModule, BsDropdownModule],
+  imports: [CommonModule, BsDropdownModule],
   templateUrl: './share-button.component.html',
   styleUrl: './share-button.component.scss',
 })
 export class ShareButtonComponent {
-  modalRef?: BsModalRef;
 
-  constructor(private modalService: BsModalService) {}
+  constructor() {}
+  socialLinks = [
+  { iconClass: 'fa-brands fa-linkedin', url: '#', color: '#0A66C2' },   
+  { iconClass: 'fa-brands fa-instagram', url: '#', color: '#E4405F' },  
+  { iconClass: 'fa-brands fa-facebook', url: '#', color: '#1877F2' },   
+  { iconClass: 'fa-brands fa-twitter', url: '#', color: '#1DA1F2' }     
+];
 
-  openModal(template: any) {
-    this.modalRef = this.modalService.show(template);
-  }
+  // socialPlatforms = [
+  //   {
+  //     name: 'Facebook',
+  //     iconClass: 'fa-brands fa-facebook',
+  //     url: 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href)
+  //   },
+  //   {
+  //     name: 'LinkedIn',
+  //     iconClass: 'fa-brands fa-linkedin',
+  //     url: 'https://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(window.location.href)
+  //   },
+  //   {
+  //     name: 'Instagram',
+  //     iconClass: 'fa-brands fa-instagram',
+  //     url: 'https://www.instagram.com/', // Instagram doesn't support direct share links
+  //     disabled: true
+  //   },
+  //   {
+  //     name: 'Twitter',
+  //     iconClass: 'fa-brands fa-twitter',
+  //     url: 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(window.location.href)
+  //   }
+  // ];
+
+
   // @Input() url: string = window.location.href;
   // @Input() text: string = 'Check this out!';
 
