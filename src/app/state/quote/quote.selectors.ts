@@ -11,4 +11,7 @@ export const selectAllQuotesLoading = createSelector(
   selectQuoteFeature,
   (state) => state.loading
 );
- 
+export const selectAllQuotesError = createSelector(
+  selectQuoteFeature,
+  (state) => state.error
+);

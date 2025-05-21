@@ -1,0 +1,34 @@
+.horizontal-menu {
+  display: flex;
+  flex-direction: row;
+  padding: 0.5rem;
+}
+
+.horizontal-menu li {
+  margin-right: 0.5rem;
+}
+
+.dropdown-menu {
+  left: 60% !important;
+  transform: translateX(-50%) !important;
+
+  border: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important; /* Removes Bootstrap's default shadow */
+}
+
+.dropdown-menu.show {
+  display: flex;
+}
+
+.dropdown-item {
+  padding: 0.3rem 0.8rem;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background: linear-gradient(to bottom, #f0f0f0, #d5d5d5, #bbbbbb);
+
+  color: inherit; /* Optional: keeps the text color consistent */
+  border-radius: 50%;
+}

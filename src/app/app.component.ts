@@ -15,7 +15,7 @@ import { DailyQuoteComponent } from './components/daily-quote/daily-quote.compon
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'meine-quote';
+  title = 'meine-quote'; 
 
   quotes$: Observable<Quote[]>;
   loading$: Observable<boolean>;

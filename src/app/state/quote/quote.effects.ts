@@ -6,16 +6,18 @@ import { QuoteService } from '../../services/quote.service';
 
 @Injectable()
 export class QuotesEffects {
- loadQuote$;
+  loadQuote$;
 
   constructor(private actions$: Actions, private QuoteService: QuoteService) {
     this.loadQuote$ = createEffect(() =>
       this.actions$.pipe(
         ofType(loadQuotes),
-        mergeMap(() => this.QuoteService.getQuote().pipe(
-          // tap(quotes => console.log('Quotes loaded:', quotes)),
-          map(quotes => loadQuotesSuccess({ quote:quotes }))
-        ))
+        mergeMap(() =>
+          this.QuoteService.getQuote().pipe(
+            // tap(quotes => console.log('Quotes loaded:', quotes)),
+            map((quotes) => loadQuotesSuccess({ quote: quotes }))
+          )
+        )
       )
     );
   }
