@@ -7,11 +7,12 @@ import {
   selectAllQuotes,
   selectAllQuotesLoading,
 } from '../../state/quote/quote.selectors';
+import { ShareButtonComponent } from '../share-button/share-button.component';
 
 @Component({
   selector: 'app-daily-quote',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ShareButtonComponent],
   templateUrl: './daily-quote.component.html',
   styleUrl: './daily-quote.component.scss',
 })

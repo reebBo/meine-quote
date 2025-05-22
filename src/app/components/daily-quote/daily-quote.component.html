@@ -1,10 +1,12 @@
 <div
   class="quote-container d-flex justify-content-center align-items-center min-vh-100"
 >
-  <div class="d-flex justify-content-end mb-3">
-    <i class="fa-solid fa-share p-2 rounded-pill"></i>
+<!-- share button -->
+  <div class="d-flex justify-content-end pb-3">
+     <app-share-button></app-share-button>
   </div>
-  <div class="block-text w-100 p-5 bg-transparent">
+  <!-- quote -->
+  <div class="block-text w-100 mt-5 p-5 bg-transparent">
     <div *ngIf="loading$ | async" class="loading-container">
       <div class="spinner"></div>
       <p>Loading quotes...</p>

@@ -1,0 +1,48 @@
+.fa-share {
+  color: #a3a2a2;
+  box-shadow: 0 0 0 1px #a3a2a2;
+  background-color: transparent;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.horizontal-menu {
+  display: flex;
+  flex-direction: row;
+  padding: 0.5rem;
+}
+
+.horizontal-menu li {
+  margin-right: 0.5rem;
+}
+
+.dropdown-menu {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+
+  border: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important; /* Removes Bootstrap's default shadow */
+}
+
+.dropdown-menu.show {
+  display: flex;
+}
+
+.dropdown-item {
+  width: 40px;        
+  height: 40px;       
+  padding: 0;         
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 50%;  
+  transition: color 0.3s, outline 0.3s;
+}
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background: transparent;
+  color: inherit;               /* Keep the icon’s original color */
+  outline: 1px solid currentColor; /* Outline uses the same color as the icon */
+  border-radius: 50%;
+}
