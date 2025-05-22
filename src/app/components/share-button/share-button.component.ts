@@ -1,6 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
+
+
+
 @Component({
   selector: 'app-share-button',
   standalone: true,
@@ -10,59 +15,40 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 })
 export class ShareButtonComponent {
 
-  constructor() {}
-  socialLinks = [
-  { iconClass: 'fa-brands fa-linkedin', url: '#', color: '#0A66C2' },   
-  { iconClass: 'fa-brands fa-instagram', url: '#', color: '#E4405F' },  
-  { iconClass: 'fa-brands fa-facebook', url: '#', color: '#1877F2' },   
-  { iconClass: 'fa-brands fa-twitter', url: '#', color: '#1DA1F2' }     
+  
+  async share(platform: string) {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(document.title);
+    let shareUrl = '';
+
+    switch (platform) {
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+        break;
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+        break;
+      case 'linkedin':
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+        break;
+      case 'instagram':
+        alert('Instagram doesn’t support direct web sharing. Please share manually.');
+        return;
+      default:
+        return;
+    }
+
+    if (Capacitor.isNativePlatform()) {
+      await Browser.open({ url: shareUrl });
+    } else {
+      window.open(shareUrl, '_blank');
+    }
+  } 
+
+socialLinks = [
+  { iconClass: 'fa-brands fa-linkedin', platform: 'linkedin', color: '#0A66C2' },   
+  { iconClass: 'fa-brands fa-instagram', platform: 'instagram', color: '#E4405F' },  
+  { iconClass: 'fa-brands fa-facebook', platform: 'facebook', color: '#1877F2' },   
+  { iconClass: 'fa-brands fa-twitter', platform: 'twitter', color: '#1DA1F2' }     
 ];
-
-  // socialPlatforms = [
-  //   {
-  //     name: 'Facebook',
-  //     iconClass: 'fa-brands fa-facebook',
-  //     url: 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href)
-  //   },
-  //   {
-  //     name: 'LinkedIn',
-  //     iconClass: 'fa-brands fa-linkedin',
-  //     url: 'https://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(window.location.href)
-  //   },
-  //   {
-  //     name: 'Instagram',
-  //     iconClass: 'fa-brands fa-instagram',
-  //     url: 'https://www.instagram.com/', // Instagram doesn't support direct share links
-  //     disabled: true
-  //   },
-  //   {
-  //     name: 'Twitter',
-  //     iconClass: 'fa-brands fa-twitter',
-  //     url: 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(window.location.href)
-  //   }
-  // ];
-
-
-  // @Input() url: string = window.location.href;
-  // @Input() text: string = 'Check this out!';
-
-  // facebookShareUrl!: string;
-  // twitterShareUrl!: string;
-  // linkedinShareUrl!: string;
-
-  // ngOnInit(): void {
-  //   const encodedUrl = encodeURIComponent(this.url);
-  //   const encodedText = encodeURIComponent(this.text);
-
-  //   this.facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
-  //   this.twitterShareUrl = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`;
-  //   this.linkedinShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
-  // }
-
-  // copyInstagramMessage(): void {
-  //   const caption = `${this.text} ${this.url}`;
-  //   navigator.clipboard.writeText(caption).then(() => {
-  //     alert('Copied to clipboard! Paste it in Instagram manually.');
-  //   });
-  // }
 }
