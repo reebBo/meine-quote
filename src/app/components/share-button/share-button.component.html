@@ -14,14 +14,15 @@
       role="menu"
       aria-labelledby="button-autoclose1"
     >
-      <li role="menuitem" *ngFor="let social of socialLinks">
-        <a
-          class="dropdown-item mx-2 justify-content-center"
-          [href]="social.url"
-          [style.color]="social.color"
+     <li role="menuitem" *ngFor="let social of socialLinks">
+        <button
+          class="dropdown-item d-flex justify-content-center align-items-center"
+          (click)="share(social.platform)"
+          type="button"
+          [style.color]="social.color" 
         >
           <i [class]="social.iconClass"></i>
-        </a>
+        </button>
       </li>
     </ul>
   </div>

@@ -38,7 +38,24 @@
   justify-content: space-between;
   border-radius: 50%;  
   transition: color 0.3s, outline 0.3s;
+  font-size: 1.4rem;
+
+  // Phones
+  @media (max-width: 600px) {
+    font-size: 1.2rem;
+  }
+
+  // Tablets
+  @media (min-width: 601px) and (max-width: 1024px) {
+    font-size: 1.3rem;
+  }
+
+  // Desktops
+  @media (min-width: 1025px) {
+    font-size: 1.6rem;
+  }
 }
+
 .dropdown-item:hover,
 .dropdown-item:focus {
   background: transparent;
