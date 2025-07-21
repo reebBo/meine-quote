@@ -1,30 +1,48 @@
 <div class="row">
-  <div class="btn-group" dropdown>
-    <i
+  <!-- Primary share buttons as icons only -->
+  <div class="d-flex gap-2 align-items-center">
+    <button
+      *ngFor="let social of primaryLinks"
+      class="btn btn-link p-2"
       type="button"
-      aria-controls="share-dropdown"
-      dropdownToggle
-      class="fa-solid fa-share p-2 rounded-pill"
-      id="button-autoclose1"
-    ></i>
-    <ul
-      id="share-dropdown"
-      *dropdownMenu
-      class="dropdown-menu dropdown-horizontal"
-      role="menu"
-      aria-labelledby="button-autoclose1"
+      (click)="share(social.platform)"
+      [style.color]="social.color"
     >
-     <li role="menuitem" *ngFor="let social of socialLinks">
-        <button
-          class="dropdown-item d-flex justify-content-center align-items-center"
-          (click)="share(social.platform)"
-          type="button"
-          [style.color]="social.color" 
+      <i [class]="social.iconClass" class="fs-5"></i>
+    </button>
+
+    <!-- "More" dropdown with just icons too -->
+    <div class="btn-group" dropdown>
+      <button
+        type="button"
+        class="btn btn-link p-2"
+        aria-controls="share-dropdown"
+        dropdownToggle
+        id="button-more-share"
+      >
+        <i class="fa-solid fa-ellipsis-h fs-5"></i>
+      </button>
+      <ul
+        id="share-dropdown"
+        *dropdownMenu
+        class="dropdown-menu dropdown-menu-start"
+        role="menu"
+        aria-labelledby="button-more-share"
+      >
+        <li
+          role="menuitem"
+          *ngFor="let social of moreLinks"
         >
-          <i [class]="social.iconClass"></i>
-        </button>
-      </li>
-    </ul>
+          <button
+            class="dropdown-item d-flex justify-content-center align-items-center"
+            (click)="share(social.platform)"
+            type="button"
+            [style.color]="social.color"
+          >
+            <i [class]="social.iconClass" class="fs-5"></i>
+          </button>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>
- 
