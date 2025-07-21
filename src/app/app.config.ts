@@ -14,13 +14,13 @@ import { provideStore } from '@ngrx/store';
 import { EffectsModule, provideEffects } from '@ngrx/effects';
 import { quoteReducer } from './state/quote/quote.reducer';
 import { QuotesEffects } from './state/quote/quote.effects';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideHttpClient(),
+    provideHttpClient(withFetch()),
     provideStore({ quote: quoteReducer }),
     provideEffects([QuotesEffects]),
     provideZoneChangeDetection({ eventCoalescing: true }),
