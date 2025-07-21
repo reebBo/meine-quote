@@ -98,51 +98,55 @@ export class ShareButtonComponent {
     }
   }
 
-  socialLinks = [
-    {
-      iconClass: 'fa-brands fa-linkedin',
-      platform: 'linkedin',
-      color: '#0A66C2',
-    },
-    {
-      iconClass: 'fa-brands fa-instagram',
-      platform: 'instagram',
-      color: '#E4405F',
-    },
-    {
-      iconClass: 'fa-brands fa-facebook',
-      platform: 'facebook',
-      color: '#1877F2',
-    },
-    {
-      iconClass: 'fa-brands fa-twitter',
-      platform: 'twitter',
-      color: '#1DA1F2',
-    },
-    {
-      iconClass: 'fa-brands fa-whatsapp',
-      platform: 'whatsapp',
-      color: '#25D366',
-    },
-    {
-      iconClass: 'fa-brands fa-telegram',
-      platform: 'telegram',
-      color: '#0088cc',
-    },
-    {
-      iconClass: 'fa-solid fa-envelope',
-      platform: 'email',
-      color: '#7B7B7B',
-    },
-    {
-      iconClass: 'fa-brands fa-pinterest',
-      platform: 'pinterest',
-      color: '#BD081C',
-    },
-    {
-      iconClass: 'fa-brands fa-reddit',
-      platform: 'reddit',
-      color: '#FF4500',
-    },
-  ];
+ primaryLinks = [
+  {
+    iconClass: 'fa-brands fa-twitter',
+    platform: 'twitter',
+    color: '#1DA1F2',
+  },
+  {
+    iconClass: 'fa-brands fa-whatsapp',
+    platform: 'whatsapp',
+    color: '#25D366',
+  },
+  {
+    iconClass: 'fa-brands fa-telegram',
+    platform: 'telegram',
+    color: '#0088cc',
+  },
+  {
+    iconClass: 'fa-solid fa-envelope',
+    platform: 'email',
+    color: '#7B7B7B',
+  },
+];
+
+moreLinks = [
+  {
+    iconClass: 'fa-brands fa-linkedin',
+    platform: 'linkedin',
+    color: '#0A66C2',
+  },
+  {
+    iconClass: 'fa-brands fa-facebook',
+    platform: 'facebook',
+    color: '#1877F2',
+  },
+  {
+    iconClass: 'fa-brands fa-pinterest',
+    platform: 'pinterest',
+    color: '#BD081C',
+  },
+  {
+    iconClass: 'fa-brands fa-reddit',
+    platform: 'reddit',
+    color: '#FF4500',
+  },
+  {
+    iconClass: 'fa-brands fa-instagram',
+    platform: 'instagram',
+    color: '#E4405F',
+  },
+];
+
 }
