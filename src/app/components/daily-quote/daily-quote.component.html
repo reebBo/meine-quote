@@ -3,7 +3,7 @@
 >
 <!-- share button -->
   <div class="d-flex justify-content-end pb-3">
-     <app-share-button></app-share-button>
+     <app-share-button [quote]="quoteOfTheDay$ | async"></app-share-button>
   </div>
   <!-- quote -->
   <div class="block-text w-100 mt-5 p-5 bg-transparent">
