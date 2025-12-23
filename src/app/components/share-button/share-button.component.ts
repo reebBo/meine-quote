@@ -42,8 +42,6 @@ export class ShareButtonComponent {
     }
 
     let hasShownModal = false;
-    const isMobile = this.isMobileDevice();
-
     const url = new URL(window.location.href);
     if (this.offsetDays > 0) {
       url.searchParams.set('offset', String(this.offsetDays));
@@ -55,23 +53,10 @@ export class ShareButtonComponent {
     const quoteAuthor = this.quote?.quoteAuthor?.trim() || 'Unknown';
     const fullQuote = `"${quoteText}"${quoteAuthor ? ' — ' + quoteAuthor : ''}`;
 
-    const shouldCaptureScreenshot = platform !== 'telegram' || isMobile;
     const urlEncoded = encodeURIComponent(shareUrlBase);
     const textEncoded = encodeURIComponent(fullQuote);
 
-    if (platform === 'telegram' && !isMobile) {
-      const telegramUrl = `https://t.me/share/url?url=${urlEncoded}&text=${textEncoded}`;
-      if (Capacitor.isNativePlatform()) {
-        await Browser.open({ url: telegramUrl });
-      } else {
-        window.open(telegramUrl, '_blank');
-      }
-      return;
-    }
-
-    const screenshotFile = shouldCaptureScreenshot
-      ? await this.captureScreenshot()
-      : null;
+    const screenshotFile = await this.captureScreenshot();
     const shareData: ShareData = {
       title: 'Quote of the Day',
       text: fullQuote,
@@ -88,55 +73,28 @@ export class ShareButtonComponent {
           !!shareData.files &&
           (!navigator.canShare || navigator.canShare(shareData));
 
-        if (platform === 'telegram') {
-          if (isMobile) {
-            if (canShareFiles) {
-              await navigator.share(shareData);
-            } else {
-              await navigator.share({
-                title: shareData.title,
-                text: shareData.text,
-                url: shareData.url,
-              });
-            }
-            return;
-          }
-        } else {
-          if (!shareData.files || canShareFiles) {
-            await navigator.share(shareData);
-            return;
-          }
-          await navigator.share({
-            title: shareData.title,
-            text: shareData.text,
-            url: shareData.url,
-          });
+        if (!shareData.files || canShareFiles) {
+          await navigator.share(shareData);
           return;
         }
+        await navigator.share({
+          title: shareData.title,
+          text: shareData.text,
+          url: shareData.url,
+        });
+        return;
       } catch (err) {
         console.warn('Web Share API failed or was cancelled:', err);
       }
     }
 
-    if (screenshotFile && shouldCaptureScreenshot) {
-      if (platform === 'telegram' && !isMobile) {
-        const result = await this.prepareDesktopScreenshot(
-          screenshotFile,
-          fullQuote
-        );
-        const message = result.copiedImage
-          ? 'Image and text copied. Open Telegram Web and paste.'
-          : 'Image downloaded. Open Telegram Web, paste the text, then attach the image.';
-        await this.showModal(message);
-        hasShownModal = true;
-      } else {
-        const result = await this.prepareDesktopScreenshot(screenshotFile);
-        const message = result.copiedImage
-          ? 'Your screenshot is ready. In the share window, paste the image to attach it.'
-          : 'Screenshot downloaded. Attach it in the share window.';
-        await this.showModal(message);
-        hasShownModal = true;
-      }
+    if (screenshotFile) {
+      const result = await this.prepareDesktopScreenshot(screenshotFile);
+      const message = result.copiedImage
+        ? 'Your screenshot is ready. In the share window, paste the image to attach it.'
+        : 'Screenshot downloaded. Attach it in the share window.';
+      await this.showModal(message);
+      hasShownModal = true;
     }
 
     let shareUrl = '';
@@ -152,10 +110,6 @@ export class ShareButtonComponent {
 
       case 'whatsapp':
         shareUrl = `https://api.whatsapp.com/send?text=${textEncoded}%0A${urlEncoded}`;
-        break;
-
-      case 'telegram':
-        shareUrl = `https://t.me/share/url?url=${urlEncoded}&text=${textEncoded}`;
         break;
 
       case 'email':
@@ -244,22 +198,17 @@ export class ShareButtonComponent {
   }
 
   private async prepareDesktopScreenshot(
-    file: File,
-    text?: string
-  ): Promise<{ copiedImage: boolean; copiedText: boolean; downloaded: boolean }> {
+    file: File
+  ): Promise<{ copiedImage: boolean; downloaded: boolean }> {
     const canWriteClipboard =
       !!navigator.clipboard?.write && typeof ClipboardItem !== 'undefined';
 
     if (canWriteClipboard) {
       try {
-        const clipboardData: Record<string, Blob> = { [file.type]: file };
-        if (text) {
-          clipboardData['text/plain'] = new Blob([text], {
-            type: 'text/plain',
-          });
-        }
-        await navigator.clipboard.write([new ClipboardItem(clipboardData)]);
-        return { copiedImage: true, copiedText: !!text, downloaded: false };
+        await navigator.clipboard.write([
+          new ClipboardItem({ [file.type]: file }),
+        ]);
+        return { copiedImage: true, downloaded: false };
       } catch {
         // Fall back to download when clipboard write fails.
       }
@@ -271,28 +220,8 @@ export class ShareButtonComponent {
     link.download = 'quote.png';
     link.click();
     URL.revokeObjectURL(url);
-    let copiedText = false;
-    if (text && navigator.clipboard?.writeText) {
-      try {
-        await navigator.clipboard.writeText(text);
-        copiedText = true;
-      } catch {
-        copiedText = false;
-      }
-    }
-    return { copiedImage: false, copiedText, downloaded: true };
+    return { copiedImage: false, downloaded: true };
   }
-
-  private isMobileDevice(): boolean {
-    const nav = navigator as Navigator & { userAgentData?: { mobile?: boolean } };
-    if (typeof nav.userAgentData?.mobile === 'boolean') {
-      return nav.userAgentData.mobile;
-    }
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    );
-  }
-
 
   primaryLinks = [
     {
@@ -304,11 +233,6 @@ export class ShareButtonComponent {
       iconClass: 'fa-brands fa-whatsapp',
       platform: 'whatsapp',
       color: '#25D366',
-    },
-    {
-      iconClass: 'fa-brands fa-telegram',
-      platform: 'telegram',
-      color: '#0088cc',
     },
   ];
 
