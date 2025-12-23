@@ -1,10 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideStore } from '@ngrx/store';
 import { AppComponent } from './app.component';
+import { quoteReducer } from './state/quote/quote.reducer';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
+      providers: [provideStore({ quote: quoteReducer }), provideAnimations()],
     }).compileComponents();
   });
 
@@ -20,10 +24,10 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('meine-quote');
   });
 
-  it('should render title', () => {
+  it('should render daily quote component', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, meine-quote');
+    expect(compiled.querySelector('app-daily-quote')).toBeTruthy();
   });
 });

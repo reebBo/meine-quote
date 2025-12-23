@@ -1,5 +1,6 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Inject, Input, ViewEncapsulation } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { Capacitor } from '@capacitor/core';
 import { Browser } from '@capacitor/browser';
@@ -13,12 +14,21 @@ import { Browser } from '@capacitor/browser';
   styleUrl: './share-button.component.scss',
 })
 export class ShareButtonComponent {
-  @Input() quote?: { quoteText: string; quoteAuthor?: string } | null;
+  @Input() quote?: { quoteText: string; quoteAuthor?: string | null } | null;
+  private isBrowser: boolean;
+
+  constructor(@Inject(PLATFORM_ID) platformId: object) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   async share(platform: string) {
+    if (!this.isBrowser) {
+      return;
+    }
+
     const url = window.location.href;
     const quoteText = this.quote?.quoteText?.trim() ?? '';
-    const quoteAuthor = this.quote?.quoteAuthor?.trim();
+    const quoteAuthor = this.quote?.quoteAuthor?.trim() || 'Unknown';
     const fullQuote = `"${quoteText}"${quoteAuthor ? ' — ' + quoteAuthor : ''}`;
 
     const shareData = {

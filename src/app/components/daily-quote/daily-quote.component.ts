@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { filter, map, Observable } from 'rxjs';
 import { Quote, loadQuotes } from '../../state/quote/quote.actions';
 import {
   selectAllQuotes,
+  selectAllQuotesError,
   selectAllQuotesLoading,
 } from '../../state/quote/quote.selectors';
 import { ShareButtonComponent } from '../share-button/share-button.component';
@@ -18,31 +19,37 @@ import { ShareButtonComponent } from '../share-button/share-button.component';
 })
 export class DailyQuoteComponent {
   loading$: Observable<boolean>;
-  quoteOfTheDay$!: Observable<Quote>;
+  error$: Observable<string | null>;
+  quoteOfTheDay$: Observable<Quote>;
 
   constructor(private store: Store) {
     this.loading$ = this.store.select(selectAllQuotesLoading);
+    this.error$ = this.store.select(selectAllQuotesError);
     this.quoteOfTheDay$ = this.store.select(selectAllQuotes).pipe(
       map((quotes) => this.getQuoteOfTheDay(quotes)),
       filter((quote): quote is Quote => quote !== undefined)
     );
   }
 
-private getQuoteOfTheDay(quotes: Quote[]): Quote | undefined {
-  if (!quotes || quotes.length === 0) return undefined;
+  retryLoadQuotes(): void {
+    this.store.dispatch(loadQuotes());
+  }
 
-  const today = new Date();
+  private getQuoteOfTheDay(quotes: Quote[]): Quote | undefined {
+    if (!quotes || quotes.length === 0) return undefined;
 
-  const offsetMinutes = today.getTimezoneOffset();
-  const offsetHours = -offsetMinutes / 60;
+    const today = new Date();
 
-  const shiftedTime = today.getTime() + offsetHours * 60 * 60 * 1000;
+    const offsetMinutes = today.getTimezoneOffset();
+    const offsetHours = -offsetMinutes / 60;
 
-  const dayNumber = Math.floor(shiftedTime / (1000 * 60 * 60 * 24));
-  const index = dayNumber % quotes.length;
-  
-  return quotes[index];
-}
+    const shiftedTime = today.getTime() + offsetHours * 60 * 60 * 1000;
+
+    const dayNumber = Math.floor(shiftedTime / (1000 * 60 * 60 * 24));
+    const index = dayNumber % quotes.length;
+
+    return quotes[index];
+  }
 
 }
 // The original calculation was based on UTC time, so the "day" would change at midnight UTC,

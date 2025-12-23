@@ -12,14 +12,28 @@
       <p>Loading quotes...</p>
     </div>
 
-    <div *ngIf="quoteOfTheDay$ | async as quote">
-      <h2 class="text-body text-end shiny-text">
-        {{ quote.quoteText }}
-      </h2>
-      <h6 class="text-end mt-2 neutral-text">
-        {{ quote.quoteAuthor }}
-      </h6>
+    <div *ngIf="!(loading$ | async) && (error$ | async)" class="error-message">
+      <p>Couldn’t load today’s quote. Please check your connection and try again.</p>
+      <button
+        class="btn btn-outline-secondary retry-button"
+        type="button"
+        (click)="retryLoadQuotes()"
+        [disabled]="loading$ | async"
+      >
+        Retry
+      </button>
     </div>
+
+    <ng-container *ngIf="!(error$ | async)">
+      <div *ngIf="quoteOfTheDay$ | async as quote">
+        <h2 class="text-body text-end shiny-text">
+          {{ quote.quoteText }}
+        </h2>
+        <h6 class="text-end mt-2 neutral-text">
+          {{ quote.quoteAuthor || 'Unknown' }}
+        </h6>
+      </div>
+    </ng-container>
   </div>
 </div>
  

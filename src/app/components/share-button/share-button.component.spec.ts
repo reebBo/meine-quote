@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { ShareButtonComponent } from './share-button.component';
 
@@ -8,7 +9,8 @@ describe('ShareButtonComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ShareButtonComponent]
+      imports: [ShareButtonComponent],
+      providers: [provideAnimations()],
     })
     .compileComponents();
 

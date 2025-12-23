@@ -1,24 +1,34 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { loadQuotes, loadQuotesSuccess } from './quote.actions';
-import { mergeMap, map, tap } from 'rxjs/operators';
+import { loadQuotes, loadQuotesFailure, loadQuotesSuccess } from './quote.actions';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { QuoteService } from '../../services/quote.service';
+import { of } from 'rxjs';
 
 @Injectable()
 export class QuotesEffects {
-  loadQuote$;
+  private actions$ = inject(Actions);
+  private quoteService = inject(QuoteService);
 
-  constructor(private actions$: Actions, private QuoteService: QuoteService) {
-    this.loadQuote$ = createEffect(() =>
-      this.actions$.pipe(
-        ofType(loadQuotes),
-        mergeMap(() =>
-          this.QuoteService.getQuote().pipe(
-            // tap(quotes => console.log('Quotes loaded:', quotes)),
-            map((quotes) => loadQuotesSuccess({ quote: quotes }))
+  readonly loadQuote$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loadQuotes),
+      mergeMap(() =>
+        this.quoteService.getQuote().pipe(
+          // tap(quotes => console.log('Quotes loaded:', quotes)),
+          map((quotes) => loadQuotesSuccess({ quotes })),
+          catchError((error: unknown) =>
+            of(
+              loadQuotesFailure({
+                error:
+                  error instanceof Error
+                    ? error.message
+                    : 'Failed to load quotes',
+              })
+            )
           )
         )
       )
-    );
-  }
+    )
+  );
 }
