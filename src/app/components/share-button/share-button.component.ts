@@ -42,6 +42,7 @@ export class ShareButtonComponent {
     }
 
     let hasShownModal = false;
+    const isMobile = this.isMobileDevice();
 
     const url = new URL(window.location.href);
     if (this.offsetDays > 0) {
@@ -54,7 +55,23 @@ export class ShareButtonComponent {
     const quoteAuthor = this.quote?.quoteAuthor?.trim() || 'Unknown';
     const fullQuote = `"${quoteText}"${quoteAuthor ? ' — ' + quoteAuthor : ''}`;
 
-    const screenshotFile = await this.captureScreenshot();
+    const shouldCaptureScreenshot = platform !== 'telegram' || isMobile;
+    const urlEncoded = encodeURIComponent(shareUrlBase);
+    const textEncoded = encodeURIComponent(fullQuote);
+
+    if (platform === 'telegram' && !isMobile) {
+      const telegramUrl = `https://t.me/share/url?url=${urlEncoded}&text=${textEncoded}`;
+      if (Capacitor.isNativePlatform()) {
+        await Browser.open({ url: telegramUrl });
+      } else {
+        window.open(telegramUrl, '_blank');
+      }
+      return;
+    }
+
+    const screenshotFile = shouldCaptureScreenshot
+      ? await this.captureScreenshot()
+      : null;
     const shareData: ShareData = {
       title: 'Quote of the Day',
       text: fullQuote,
@@ -67,28 +84,53 @@ export class ShareButtonComponent {
     // Try Web Share API first (on supported platforms)
     if (navigator.share && platform !== 'instagram') {
       try {
-        if (!shareData.files || !navigator.canShare || navigator.canShare(shareData)) {
-          await navigator.share(shareData);
+        const canShareFiles =
+          !!shareData.files &&
+          (!navigator.canShare || navigator.canShare(shareData));
+
+        if (platform === 'telegram') {
+          if (canShareFiles && isMobile) {
+            await navigator.share(shareData);
+            return;
+          }
+        } else {
+          if (!shareData.files || canShareFiles) {
+            await navigator.share(shareData);
+            return;
+          }
+          await navigator.share({
+            title: shareData.title,
+            text: shareData.text,
+            url: shareData.url,
+          });
           return;
         }
-        await navigator.share({
-          title: shareData.title,
-          text: shareData.text,
-          url: shareData.url,
-        });
-        return;
       } catch (err) {
         console.warn('Web Share API failed or was cancelled:', err);
       }
     }
 
-    if (screenshotFile) {
-      hasShownModal =
-        (await this.prepareDesktopScreenshot(screenshotFile)) || hasShownModal;
+    if (screenshotFile && shouldCaptureScreenshot) {
+      if (platform === 'telegram' && !isMobile) {
+        const result = await this.prepareDesktopScreenshot(
+          screenshotFile,
+          fullQuote
+        );
+        const message = result.copiedImage
+          ? 'Image and text copied. Open Telegram Web and paste.'
+          : 'Image downloaded. Open Telegram Web, paste the text, then attach the image.';
+        await this.showModal(message);
+        hasShownModal = true;
+      } else {
+        const result = await this.prepareDesktopScreenshot(screenshotFile);
+        const message = result.copiedImage
+          ? 'Your screenshot is ready. In the share window, paste the image to attach it.'
+          : 'Screenshot downloaded. Attach it in the share window.';
+        await this.showModal(message);
+        hasShownModal = true;
+      }
     }
 
-    const urlEncoded = encodeURIComponent(shareUrlBase);
-    const textEncoded = encodeURIComponent(fullQuote);
     let shareUrl = '';
 
     switch (platform) {
@@ -193,19 +235,23 @@ export class ShareButtonComponent {
     return this.html2canvasModule;
   }
 
-  private async prepareDesktopScreenshot(file: File): Promise<boolean> {
+  private async prepareDesktopScreenshot(
+    file: File,
+    text?: string
+  ): Promise<{ copiedImage: boolean; copiedText: boolean; downloaded: boolean }> {
     const canWriteClipboard =
       !!navigator.clipboard?.write && typeof ClipboardItem !== 'undefined';
 
     if (canWriteClipboard) {
       try {
-        await navigator.clipboard.write([
-          new ClipboardItem({ [file.type]: file }),
-        ]);
-        await this.showModal(
-          'Your screenshot is ready. In the share window, paste the image to attach it.'
-        );
-        return true;
+        const clipboardData: Record<string, Blob> = { [file.type]: file };
+        if (text) {
+          clipboardData['text/plain'] = new Blob([text], {
+            type: 'text/plain',
+          });
+        }
+        await navigator.clipboard.write([new ClipboardItem(clipboardData)]);
+        return { copiedImage: true, copiedText: !!text, downloaded: false };
       } catch {
         // Fall back to download when clipboard write fails.
       }
@@ -217,9 +263,28 @@ export class ShareButtonComponent {
     link.download = 'quote.png';
     link.click();
     URL.revokeObjectURL(url);
-    await this.showModal('Screenshot downloaded. Attach it in the share window.');
-    return true;
+    let copiedText = false;
+    if (text && navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(text);
+        copiedText = true;
+      } catch {
+        copiedText = false;
+      }
+    }
+    return { copiedImage: false, copiedText, downloaded: true };
   }
+
+  private isMobileDevice(): boolean {
+    const nav = navigator as Navigator & { userAgentData?: { mobile?: boolean } };
+    if (typeof nav.userAgentData?.mobile === 'boolean') {
+      return nav.userAgentData.mobile;
+    }
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
+  }
+
 
   primaryLinks = [
     {
