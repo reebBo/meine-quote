@@ -1,7 +1,8 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, isDevMode } from '@angular/core';
+import { PLATFORM_ID } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { filter, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { Quote, loadQuotes } from '../../state/quote/quote.actions';
 import {
   selectAllQuotes,
@@ -9,6 +10,7 @@ import {
   selectAllQuotesLoading,
 } from '../../state/quote/quote.selectors';
 import { ShareButtonComponent } from '../share-button/share-button.component';
+import { QuoteService } from '../../services/quote.service';
 
 @Component({
   selector: 'app-daily-quote',
@@ -20,25 +22,86 @@ import { ShareButtonComponent } from '../share-button/share-button.component';
 export class DailyQuoteComponent {
   loading$: Observable<boolean>;
   error$: Observable<string | null>;
-  quoteOfTheDay$: Observable<Quote>;
-
-  constructor(private store: Store) {
+  currentQuote$: Observable<Quote | undefined>;
+  readonly isDevMode = isDevMode();
+  private isBrowser: boolean;
+  useLocalQuotes = false;
+  quoteOffsetDays = 0;
+  private quoteOffsetDays$ = new BehaviorSubject<number>(0);
+  constructor(
+    private store: Store,
+    private quoteService: QuoteService,
+    @Inject(PLATFORM_ID) platformId: object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
     this.loading$ = this.store.select(selectAllQuotesLoading);
     this.error$ = this.store.select(selectAllQuotesError);
-    this.quoteOfTheDay$ = this.store.select(selectAllQuotes).pipe(
-      map((quotes) => this.getQuoteOfTheDay(quotes)),
-      filter((quote): quote is Quote => quote !== undefined)
+    this.currentQuote$ = combineLatest([
+      this.store.select(selectAllQuotes),
+      this.quoteOffsetDays$,
+    ]).pipe(
+      map(([quotes, offsetDays]) =>
+        this.getQuoteForDayOffset(quotes, offsetDays)
+      )
     );
+    this.useLocalQuotes = this.quoteService.isUsingLocalQuotes();
+    if (this.isBrowser) {
+      const params = new URLSearchParams(window.location.search);
+      const offsetParam = params.get('offset');
+      const parsedOffset = Number.parseInt(offsetParam ?? '', 10);
+      if (!Number.isNaN(parsedOffset) && parsedOffset >= 0 && parsedOffset <= 5) {
+        this.quoteOffsetDays = parsedOffset;
+        this.quoteOffsetDays$.next(parsedOffset);
+      }
+    }
   }
 
   retryLoadQuotes(): void {
     this.store.dispatch(loadQuotes());
   }
 
-  private getQuoteOfTheDay(quotes: Quote[]): Quote | undefined {
-    if (!quotes || quotes.length === 0) return undefined;
+  toggleQuoteSource(): void {
+    this.quoteService.toggleUseLocalQuotes();
+    this.useLocalQuotes = this.quoteService.isUsingLocalQuotes();
+    this.store.dispatch(loadQuotes());
+  }
+
+  goToPreviousQuote(): void {
+    if (this.quoteOffsetDays >= 5) {
+      return;
+    }
+
+    this.quoteOffsetDays += 1;
+    this.quoteOffsetDays$.next(this.quoteOffsetDays);
+  }
+
+  goToNextQuote(): void {
+    if (this.quoteOffsetDays <= 0) {
+      return;
+    }
+
+    this.quoteOffsetDays -= 1;
+    this.quoteOffsetDays$.next(this.quoteOffsetDays);
+  }
+
+  getOffsetLabel(): string {
+    if (this.quoteOffsetDays === 0) {
+      return 'Today';
+    }
+    if (this.quoteOffsetDays === 1) {
+      return 'Yesterday';
+    }
+    return `${this.quoteOffsetDays} days ago`;
+  }
+
+  private getQuoteForDayOffset(
+    quotes: Quote[],
+    offsetDays: number
+  ): Quote | undefined {
+    if (!Array.isArray(quotes) || quotes.length === 0) return undefined;
 
     const today = new Date();
+    today.setDate(today.getDate() - offsetDays);
 
     const offsetMinutes = today.getTimezoneOffset();
     const offsetHours = -offsetMinutes / 60;
@@ -50,7 +113,6 @@ export class DailyQuoteComponent {
 
     return quotes[index];
   }
-
 }
 // The original calculation was based on UTC time, so the "day" would change at midnight UTC,
 // which may be several hours different from local midnight. This could cause the daily quote

@@ -26,6 +26,48 @@
 .block-text {
   min-height: 500px;
 }
+
+.share-card {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  width: 1080px;
+  height: 1350px;
+  padding: 140px 120px;
+  box-sizing: border-box;
+  background: linear-gradient(to bottom, #f0f0f0, #d5d5d5, #bbbbbb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.share-card__inner {
+  text-align: center;
+}
+
+.share-card__label {
+  font-family: "Lato", sans-serif;
+  color: #645c0f;
+  font-size: 32px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+.share-card__quote {
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  font-size: 72px;
+  line-height: 1.2;
+  color: #6b2f43;
+  margin-bottom: 28px;
+}
+
+.share-card__author {
+  font-family: "Lato", sans-serif;
+  color: #6b5a12;
+  font-size: 34px;
+}
 .shiny-text {
   background: linear-gradient(140deg, #3a8f48, #8b2a57, #877c17, #172a72);
   -webkit-background-clip: text;

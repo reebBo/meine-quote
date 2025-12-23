@@ -9,6 +9,7 @@ import {
   selectAllQuotesLoading,
 } from '../../state/quote/quote.selectors';
 import { Quote } from '../../state/quote/quote.actions';
+import { QuoteService } from '../../services/quote.service';
 
 describe('DailyQuoteComponent', () => {
   let component: DailyQuoteComponent;
@@ -21,6 +22,13 @@ describe('DailyQuoteComponent', () => {
       providers: [
         provideMockStore(),
         provideAnimations(),
+        {
+          provide: QuoteService,
+          useValue: {
+            isUsingLocalQuotes: () => false,
+            toggleUseLocalQuotes: () => {},
+          },
+        },
       ],
     })
     .compileComponents();
@@ -84,6 +92,39 @@ describe('DailyQuoteComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Test quote');
     expect(compiled.textContent).toContain('Unknown');
+
+    jasmine.clock().uninstall();
+  });
+
+  it('allows navigating to previous quote', () => {
+    jasmine.clock().install();
+    jasmine.clock().mockDate(new Date('2025-01-05T12:00:00Z'));
+
+    const quotes: Quote[] = [
+      { quoteText: 'Q1', quoteAuthor: 'A1' },
+      { quoteText: 'Q2', quoteAuthor: 'A2' },
+      { quoteText: 'Q3', quoteAuthor: 'A3' },
+    ];
+
+    store.overrideSelector(selectAllQuotesLoading, false);
+    store.overrideSelector(selectAllQuotesError, null);
+    store.overrideSelector(selectAllQuotes, quotes);
+
+    fixture = TestBed.createComponent(DailyQuoteComponent);
+    component = fixture.componentInstance;
+    store.refreshState();
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Today');
+
+    const prevButton = compiled.querySelector(
+      'button[aria-label="Show previous quote"]'
+    ) as HTMLButtonElement;
+    prevButton.click();
+    fixture.detectChanges();
+
+    expect(compiled.textContent).toContain('Yesterday');
 
     jasmine.clock().uninstall();
   });
