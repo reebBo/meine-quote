@@ -9,7 +9,8 @@ import { Quote } from '../state/quote/quote.actions';
   providedIn: 'root',
 })
 export class QuoteService {
-  private apiQuotesUrl = '  https://raw.githubusercontent.com/JamesFT/Database-Quotes-JSON/master/quotes.json'; 
+  private apiQuotesUrl =
+    'https://raw.githubusercontent.com/JamesFT/Database-Quotes-JSON/master/quotes.json';
 
   constructor(private http: HttpClient) {}
 

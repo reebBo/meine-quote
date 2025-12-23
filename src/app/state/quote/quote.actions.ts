@@ -6,11 +6,15 @@ export interface Quote {
   // username: string;
   // email: string;
   quoteText: string;
-  quoteAuthor: string;
+  quoteAuthor?: string | null;
 }
 
 export const loadQuotes = createAction('[Quote API] Load Quotes');
 export const loadQuotesSuccess = createAction(
   '[User API] Load Quotes Success',
   props<{ quote: Quote[] }>()
+);
+export const loadQuotesFailure = createAction(
+  '[Quote API] Load Quotes Failure',
+  props<{ error: string }>()
 );
