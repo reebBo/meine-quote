@@ -89,8 +89,16 @@ export class ShareButtonComponent {
           (!navigator.canShare || navigator.canShare(shareData));
 
         if (platform === 'telegram') {
-          if (canShareFiles && isMobile) {
-            await navigator.share(shareData);
+          if (isMobile) {
+            if (canShareFiles) {
+              await navigator.share(shareData);
+            } else {
+              await navigator.share({
+                title: shareData.title,
+                text: shareData.text,
+                url: shareData.url,
+              });
+            }
             return;
           }
         } else {
