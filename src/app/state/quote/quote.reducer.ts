@@ -21,9 +21,9 @@ export const initialState: QuoteState = {
 export const quoteReducer = createReducer(
   initialState,
   on(loadQuotes, (state) => ({ ...state, loading: true, error: null })),
-  on(loadQuotesSuccess, (state, { quote }) => ({
+  on(loadQuotesSuccess, (state, { quotes }) => ({
     ...state,
-    quotes: quote,
+    quotes,
     loading: false,
     error: null,
   })),

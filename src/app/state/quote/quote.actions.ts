@@ -11,8 +11,8 @@ export interface Quote {
 
 export const loadQuotes = createAction('[Quote API] Load Quotes');
 export const loadQuotesSuccess = createAction(
-  '[User API] Load Quotes Success',
-  props<{ quote: Quote[] }>()
+  '[Quote API] Load Quotes Success',
+  props<{ quotes: Quote[] }>()
 );
 export const loadQuotesFailure = createAction(
   '[Quote API] Load Quotes Failure',
